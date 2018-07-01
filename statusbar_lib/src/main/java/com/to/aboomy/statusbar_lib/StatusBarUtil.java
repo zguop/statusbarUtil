@@ -6,9 +6,12 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.RequiresApi;
+import android.support.v4.widget.DrawerLayout;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -32,6 +35,77 @@ public class StatusBarUtil {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(Color.TRANSPARENT);
         setImmersiveStatusBarBackgroundColor(activity, isNeedDark(color));
+    }
+
+    /**
+     * 为DrawerLayout 布局设置状态栏颜色,纯色
+     *
+     * @param activity     需要设置的activity
+     * @param drawerLayout DrawerLayout
+     * @param color        状态栏颜色值
+     */
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static void drawerLayoutTransparencyBar(Activity activity, DrawerLayout drawerLayout, @ColorInt int color) {
+        drawerLayoutTransparencyBar(activity, color, drawerLayout, 0);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static void drawerLayoutTransparencyBar(Activity activity, @ColorInt int color, DrawerLayout drawerLayout, int statusBarAlpha) {
+        transparencyBar(activity, color);
+        ViewGroup contentLayout = (ViewGroup) drawerLayout.getChildAt(0);
+        View statusBar = contentLayout.getChildAt(0);
+        if (statusBar != null && statusBar instanceof StatusBarView) {
+            if (statusBar.getVisibility() == View.GONE) {
+                statusBar.setVisibility(View.VISIBLE);
+            }
+            statusBar.setBackgroundColor(color);
+        } else {
+            StatusBarView statusBarView = new StatusBarView(activity);
+            statusBarView.setBackgroundColor(calculateStatusColor(color, statusBarAlpha));
+            contentLayout.addView(statusBarView, 0);
+        }
+        // 内容布局不是 LinearLayout 时,设置padding top
+        if (!(contentLayout instanceof LinearLayout) && contentLayout.getChildAt(1) != null) {
+            contentLayout.getChildAt(1)
+                    .setPadding(contentLayout.getPaddingLeft(), getStatusBarHeight(activity) + contentLayout.getPaddingTop(),
+                            contentLayout.getPaddingRight(), contentLayout.getPaddingBottom());
+        }
+        setDrawerLayoutProperty(drawerLayout, contentLayout);
+    }
+
+    /**
+     * 设置 DrawerLayout 属性
+     *
+     * @param drawerLayout              DrawerLayout
+     * @param drawerLayoutContentLayout DrawerLayout 的内容布局
+     */
+    private static void setDrawerLayoutProperty(DrawerLayout drawerLayout, ViewGroup drawerLayoutContentLayout) {
+        ViewGroup drawer = (ViewGroup) drawerLayout.getChildAt(1);
+        drawerLayout.setFitsSystemWindows(false);
+        drawerLayoutContentLayout.setFitsSystemWindows(false);
+        drawerLayoutContentLayout.setClipToPadding(true);
+        drawer.setFitsSystemWindows(false);
+    }
+
+    /**
+     * 计算状态栏颜色
+     *
+     * @param color color值
+     * @param alpha alpha值
+     * @return 最终的状态栏颜色
+     */
+    private static int calculateStatusColor(@ColorInt int color, int alpha) {
+        if (alpha == 0) {
+            return color;
+        }
+        float a = 1 - alpha / 255f;
+        int red = color >> 16 & 0xff;
+        int green = color >> 8 & 0xff;
+        int blue = color & 0xff;
+        red = (int) (red * a + 0.5);
+        green = (int) (green * a + 0.5);
+        blue = (int) (blue * a + 0.5);
+        return 0xff << 24 | red << 16 | green << 8 | blue;
     }
 
     /**

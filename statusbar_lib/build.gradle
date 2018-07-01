@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'//需添加的
 apply plugin: 'com.jfrog.bintray'//需添加的
-version = "1.0.0" // 修改为你的版本号
+version = "1.1.4" // 修改为你的版本号
 
 android {
     compileSdkVersion 27
@@ -9,7 +9,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 27
         versionCode 1
-        versionName "1.0.0"
+        versionName this.version
     }
 
     buildTypes {
@@ -97,4 +97,6 @@ bintray {
 
 dependencies {
     compileOnly "com.android.support:support-annotations:27.1.1"
+    compileOnly "com.android.support:design:27.1.1"
 }
+//先执行   chmod a+x ./gradlew   ./gradlew install ，然后执行 ./gradlew bintrayUpload
