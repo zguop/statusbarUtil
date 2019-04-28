@@ -1,9 +1,10 @@
 package com.to.aboomy.statusbar_lib;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+
+import androidx.annotation.Nullable;
 
 /**
  * auth aboom by 2018/2/27.

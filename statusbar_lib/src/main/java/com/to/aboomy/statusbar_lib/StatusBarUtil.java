@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.annotation.ColorInt;
-import android.support.annotation.RequiresApi;
-import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -15,6 +12,10 @@ import android.widget.LinearLayout;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.RequiresApi;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import static android.os.Build.MANUFACTURER;
 
@@ -54,7 +55,7 @@ public class StatusBarUtil {
         transparencyBar(activity, color);
         ViewGroup contentLayout = (ViewGroup) drawerLayout.getChildAt(0);
         View statusBar = contentLayout.getChildAt(0);
-        if (statusBar != null && statusBar instanceof StatusBarView) {
+        if (statusBar instanceof StatusBarView) {
             if (statusBar.getVisibility() == View.GONE) {
                 statusBar.setVisibility(View.VISIBLE);
             }
