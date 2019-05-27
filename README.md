@@ -1,10 +1,10 @@
 # statusbarUtil
+状态栏工具类，只支持android 5.0以上版本，不兼容5.0以下
 
 Gradle 
 ```groovy
 dependencies{
-    implementation 'com.to.aboomy:statusbar_lib:1.1.4'  //最新版本
-    implementation 'com.to.aboomy:statusbar_lib:1.1.5' //androidx 版本
+    implementation 'com.to.aboomy:statusbar_lib:1.1.8'  //最新版本
 }
 ```
 
@@ -17,19 +17,19 @@ dependencies{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         ChangeModeController.get().setTheme(this);
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            isImmersiveStatusBar = StatusBarUtil.setImmersiveStatusBarBackgroundColor(this, ThemeUtils.getThemeAttrColor(this, R.attr.colorPrimary));
-        }
+        
+        //返回值为是否成功设置了状态栏 文字颜色 6.0 以上可以根据状态栏颜色调整文字颜色
+
+        //设置状态栏颜色
+        isImmersiveStatusBar  = StatusBarUtil.setStatusBarColor();
+        //透明状态栏
+        isImmersiveStatusBar = StatusBarUtil.transparencyBar()
+        //有drawerLayout为状态栏设置颜色
+        isImmersiveStatusBar =  StatusBarUtil.drawerLayoutForColor()
+    
     }
     
-    /**
-     * 设置状态栏透明，需要在onCreate之后调用
-     */
-    public void transparencyBar() {
-        if (isImmersiveStatusBar && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            StatusBarUtil.transparencyBar(this, ThemeUtils.getThemeAttrColor(this, R.attr.colorPrimary));
-        }
-    }
+
 ```
 
 具体使用可以我的demo项目 BaseActivity：
