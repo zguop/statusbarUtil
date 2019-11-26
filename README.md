@@ -4,7 +4,7 @@
 Gradle 
 ```groovy
 dependencies{
-    implementation 'com.to.aboomy:statusbar_lib:1.1.8'  //最新版本
+    implementation 'com.to.aboomy:statusbar_lib:1.2.0'  //最新版本
 }
 ```
 

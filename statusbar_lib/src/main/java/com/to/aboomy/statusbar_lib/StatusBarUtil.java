@@ -7,6 +7,7 @@ import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.view.ViewGroup;
@@ -142,13 +143,9 @@ public class StatusBarUtil {
         if (activity == null) {
             return false;
         }
-        if (setStatusBarFontForMiui(activity, isDark)) {
-            return true;
-        }
-        if (setStatusBarFontForFlyme(activity, isDark)) {
-            return true;
-        }
         boolean isSuc = false;
+        setStatusBarFontForMiui(activity, isDark);
+        setStatusBarFontForFlyme(activity, isDark);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             isSuc = setStatusBarModeFor6_0(activity, isDark);
         }
@@ -158,7 +155,7 @@ public class StatusBarUtil {
     /**
      * 修改 MIUI V6  以上状态栏颜色
      */
-    private static boolean setStatusBarFontForMiui(@NonNull Activity activity, boolean darkIcon) {
+    private static void setStatusBarFontForMiui(@NonNull Activity activity, boolean darkIcon) {
         Class<? extends Window> clazz = activity.getWindow().getClass();
         try {
             Class<?> layoutParams = Class.forName("android.view.MiuiWindowManager$LayoutParams");
@@ -166,16 +163,15 @@ public class StatusBarUtil {
             int darkModeFlag = field.getInt(layoutParams);
             Method extraFlagField = clazz.getMethod("setExtraFlags", int.class, int.class);
             extraFlagField.invoke(activity.getWindow(), darkIcon ? darkModeFlag : 0, darkModeFlag);
-            return true;
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();
         }
     }
 
     /**
      * 修改魅族状态栏字体颜色 Flyme 4.0
      */
-    private static boolean setStatusBarFontForFlyme(@NonNull Activity activity, boolean darkIcon) {
+    private static void setStatusBarFontForFlyme(@NonNull Activity activity, boolean darkIcon) {
         try {
             WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
             Field darkFlag = WindowManager.LayoutParams.class.getDeclaredField("MEIZU_FLAG_DARK_STATUS_BAR_ICON");
@@ -191,12 +187,12 @@ public class StatusBarUtil {
             }
             meizuFlags.setInt(lp, value);
             activity.getWindow().setAttributes(lp);
-            return true;
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private static boolean setStatusBarModeFor6_0(Activity activity, boolean dark) {
         try {
             View decorView = activity.getWindow().getDecorView();

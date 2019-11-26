@@ -1,11 +1,14 @@
 package com.to.aboomy.statusbarsample;
 
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+
+import com.to.aboomy.statusbar_lib.StatusBarUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,22 +18,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final View viewById = findViewById(R.id.text);
-        Log.e("aa", " --- " + viewById.getPivotY());
 
-        int[] location = new int[2];
-        viewById.getLocationInWindow(location);
-        int x = location[0];
-        int y = location[1];
-        Log.e("aa", " --- x = " + x + " y " + y);
-
-
-        viewById.post(new Runnable() {
-            @Override
-            public void run() {
-                Log.e("aa", " --- " + viewById.getTop());
-
-            }
-        });
+        StatusBarUtil.setStatusBarColor(this, Color.WHITE);
 
     }
 }
