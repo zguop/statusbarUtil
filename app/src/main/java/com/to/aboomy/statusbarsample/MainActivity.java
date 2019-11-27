@@ -1,11 +1,9 @@
 package com.to.aboomy.statusbarsample;
 
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.to.aboomy.statusbar_lib.StatusBarUtil;
@@ -19,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         final View viewById = findViewById(R.id.text);
 
-        StatusBarUtil.setStatusBarColor(this, Color.WHITE);
+        StatusBarUtil.transparencyBar(this,true);
 
     }
 }

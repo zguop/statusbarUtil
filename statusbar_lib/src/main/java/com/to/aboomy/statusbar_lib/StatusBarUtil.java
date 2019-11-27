@@ -144,8 +144,12 @@ public class StatusBarUtil {
             return false;
         }
         boolean isSuc = false;
-        setStatusBarFontForMiui(activity, isDark);
-        setStatusBarFontForFlyme(activity, isDark);
+        if (setStatusBarFontForMiui(activity, isDark)) {
+            isSuc = true;
+        }
+        if (setStatusBarFontForFlyme(activity, isDark)) {
+            isSuc = true;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             isSuc = setStatusBarModeFor6_0(activity, isDark);
         }
@@ -155,7 +159,7 @@ public class StatusBarUtil {
     /**
      * 修改 MIUI V6  以上状态栏颜色
      */
-    private static void setStatusBarFontForMiui(@NonNull Activity activity, boolean darkIcon) {
+    private static boolean setStatusBarFontForMiui(@NonNull Activity activity, boolean darkIcon) {
         Class<? extends Window> clazz = activity.getWindow().getClass();
         try {
             Class<?> layoutParams = Class.forName("android.view.MiuiWindowManager$LayoutParams");
@@ -163,15 +167,16 @@ public class StatusBarUtil {
             int darkModeFlag = field.getInt(layoutParams);
             Method extraFlagField = clazz.getMethod("setExtraFlags", int.class, int.class);
             extraFlagField.invoke(activity.getWindow(), darkIcon ? darkModeFlag : 0, darkModeFlag);
+            return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            return false;
         }
     }
 
     /**
      * 修改魅族状态栏字体颜色 Flyme 4.0
      */
-    private static void setStatusBarFontForFlyme(@NonNull Activity activity, boolean darkIcon) {
+    private static boolean setStatusBarFontForFlyme(@NonNull Activity activity, boolean darkIcon) {
         try {
             WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
             Field darkFlag = WindowManager.LayoutParams.class.getDeclaredField("MEIZU_FLAG_DARK_STATUS_BAR_ICON");
@@ -187,8 +192,9 @@ public class StatusBarUtil {
             }
             meizuFlags.setInt(lp, value);
             activity.getWindow().setAttributes(lp);
+            return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            return false;
         }
     }
 
